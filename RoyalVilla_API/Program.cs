@@ -68,11 +68,23 @@ builder.Services.AddOpenApi(options =>
  
 builder.Services.AddAutoMapper(o =>
 {
+    //Villa
     o.CreateMap<Villa, VillaCreateDTO>().ReverseMap();
     o.CreateMap<Villa, VillaUpdateDTO>().ReverseMap();
     o.CreateMap<Villa, VillaDTO>().ReverseMap();
     o.CreateMap<VillaUpdateDTO, VillaDTO>().ReverseMap();
+    
+    //User
     o.CreateMap<User, UserDTO>().ReverseMap();
+
+    //Villa Amenities
+    
+    o.CreateMap<VillaAmenities, VillaAmenitiesCreateDTO>().ReverseMap();
+    o.CreateMap<VillaAmenities, VillaAmenitiesUpdateDTO>().ReverseMap();
+    o.CreateMap<VillaAmenities, VillaAmenitiesDTO>()
+    .ForMember(dest => dest.VillaName, opt => opt.MapFrom(src => src.Villa != null ? src.Villa.Name : null));
+    o.CreateMap<VillaAmenitiesDTO, VillaAmenities>().ReverseMap();
+
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();

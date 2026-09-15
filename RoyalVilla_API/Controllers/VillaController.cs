@@ -55,7 +55,7 @@ namespace RoyalVilla_API.Controllers
 
                 if(villa == null)
                 {
-                    return NotFound(ApiResponse<object>.NotFound($"Villa with ID {id} was found"));
+                    return NotFound(ApiResponse<object>.NotFound($"Villa with ID {id} was not found"));
                 }
                 return Ok(ApiResponse<VillaDTO>.Ok(_mapper.Map<VillaDTO>(villa), "Records retrieved successfully"));
             }
@@ -82,7 +82,7 @@ namespace RoyalVilla_API.Controllers
 
                 var duplicateVilla = await _db.Villa.FirstOrDefaultAsync(u => u.Name.ToLower() == villaDTO.Name.ToLower());
 
-                if (duplicateVilla != null)
+                if (duplicateVilla != null) //This means if the duplicate exists
                 {
                     return Conflict(ApiResponse<object>.Conflict($"Villa with the name '{villaDTO.Name}' already exists"));
                 }
