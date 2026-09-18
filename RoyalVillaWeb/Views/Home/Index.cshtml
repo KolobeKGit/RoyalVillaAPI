@@ -72,76 +72,92 @@
         </div>
     </div>
 
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle-fill"></i> @TempData["error"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-    <div class="row">
-        <div class="col-12">
-            <div class="alert alert-info text-center" role="alert">
-                <i class="bi bi-info-circle-fill fs-1 d-block mb-3"></i>
-                <h4>No Villas Available</h4>
-                <p class="mb-0">There are currently no villas to display. Please check back later!</p>
+    @if (Model == null || !Model.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info text-center" role="alert">
+                    <i class="bi bi-info-circle-fill fs-1 d-block mb-3"></i>
+                    <h4>No Villas Available</h4>
+                    <p class="mb-0">There are currently no villas to display. Please check back later!</p>
+                </div>
             </div>
         </div>
-    </div>
-
+    }
     <!-- Villa Cards Grid -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <div class="col">
-            <div class="card h-100 shadow-sm hover-shadow transition">
-                <!-- Villa Image -->
-                <div class="position-relative overflow-hidden">
-                    <img src="#" class="card-img-top villa-image" style="height: 250px; object-fit: cover;">
-                    <div class="card-img-top bg-gradient-primary d-flex align-items-center justify-content-center" style="height: 250px;">
-                        <i class="bi bi-image text-white" style="font-size: 4rem;"></i>
-                    </div>
-                    <!-- Price Badge -->
-                    <div class="position-absolute top-0 end-0 m-3">
-                        <span class="badge bg-success fs-6 px-3 py-2 rounded-pill shadow">
-                            $$$/night
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Card Body -->
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title text-primary fw-bold mb-3">Name</h5>
-
-                    <p class="card-text text-muted flex-grow-1">
-                        Details
-                    </p>
-
-                    <!-- Villa Details -->
-                    <div class="mb-3">
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-people-fill text-primary me-2"></i>
-                                    <small class="text-muted">XX Guests</small>
-                                </div>
+        @foreach (var villa in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm hover-shadow transition">
+                    <!-- Villa Image -->
+                    <div class="position-relative overflow-hidden">
+                        @if (!string.IsNullOrEmpty(villa.ImageUrl))
+                        {
+                            <img src="@villa.ImageUrl" class="card-img-top villa-image" style="height: 250px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-gradient-primary d-flex align-items-center justify-content-center" style="height: 250px;">
+                                <i class="bi bi-image text-white" style="font-size: 4rem;"></i>
                             </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-square-fill text-primary me-2"></i>
-                                    <small class="text-muted">XX sqft</small>
-                                </div>
-                            </div>
+                        }
+                        
+                        <!-- Price Badge -->
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-success fs-6 px-3 py-2 rounded-pill shadow">
+                                $@villa.Rate.ToString("N0")/night
+                            </span>
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div class="d-grid gap-2">
-                        <a href="mailto:hello@dotnetmastery.com?"
-                           class="btn btn-primary btn-hover">
-                            <i class="bi bi-envelope"></i> Contact Us
-                        </a>
-                    </div>
-                </div>
+                    <!-- Card Body -->
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-primary fw-bold mb-3">@villa.Name</h5>
 
+                        <p class="card-text text-muted flex-grow-1">
+                            @villa.Details
+                        </p>
+
+                        <!-- Villa Details -->
+                        <div class="mb-3">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-people-fill m-1"></i>
+                                        <small class="text-muted">@villa.Occupancy Guests</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="d-flex align-items-center float-end">
+                                        <i class="bi bi-house m-1"></i>
+                                        <small class="text-muted">@villa.Sqft sqft</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2">
+                            <a href="mailto:hello@dotnetmastery.com?"
+                               class="btn btn-primary btn-hover">
+                                <i class="bi bi-envelope"></i> Contact Us
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-        </div>
+        }
+        
     </div>
 
     <!-- Statistics Section -->
@@ -154,28 +170,28 @@
                         <div class="col-md-3">
                             <div class="stat-item">
                                 <i class="bi bi-house-heart-fill text-primary fs-1 mb-3"></i>
-                                <h3 class="text-primary fw-bold mb-1">XX</h3>
+                                <h3 class="text-primary fw-bold mb-1">@Model.Count()</h3>
                                 <p class="text-muted mb-0">Total Villas</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="stat-item">
                                 <i class="bi bi-cash-coin text-success fs-1 mb-3"></i>
-                                <h3 class="text-success fw-bold mb-1">$$$</h3>
+                                <h3 class="text-success fw-bold mb-1">$@Model.Min(v=>v.Rate).ToString("N0")</h3>
                                 <p class="text-muted mb-0">Starting From</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="stat-item">
                                 <i class="bi bi-people-fill text-info fs-1 mb-3"></i>
-                                <h3 class="text-info fw-bold mb-1">XX</h3>
+                                <h3 class="text-info fw-bold mb-1">@Model.Max(v=>v.Occupancy).ToString()</h3>
                                 <p class="text-muted mb-0">Max Occupancy</p>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="stat-item">
                                 <i class="bi bi-arrows-fullscreen text-warning fs-1 mb-3"></i>
-                                <h3 class="text-warning fw-bold mb-1">XX</h3>
+                                <h3 class="text-warning fw-bold mb-1">@Model.Sum(v => v.Sqft).ToString("N0")</h3>
                                 <p class="text-muted mb-0">Total Sqft</p>
                             </div>
                         </div>
@@ -209,6 +225,7 @@
             opacity: 0;
             transform: translateY(30px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -251,10 +268,10 @@
         border-radius: 15px;
     }
 
-    .hover-shadow:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 1.5rem 4rem rgba(0,0,0,.2) !important;
-    }
+        .hover-shadow:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 1.5rem 4rem rgba(0,0,0,.2) !important;
+        }
 
     .villa-image {
         transition: transform 0.5s ease-in-out;
@@ -281,10 +298,10 @@
         transition: all 0.3s ease;
     }
 
-    .btn-hover:hover {
-        transform: scale(1.02);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
+        .btn-hover:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
 
     /* Stats Card */
     .stats-card {
@@ -297,9 +314,9 @@
         transition: transform 0.3s ease;
     }
 
-    .stat-item:hover {
-        transform: translateY(-5px);
-    }
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
 
     /* Background Gradient */
     .bg-gradient-primary {
