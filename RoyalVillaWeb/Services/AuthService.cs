@@ -1,4 +1,5 @@
 ﻿using RoyalVilla.DTO;
+using RoyalVillaWeb.Models;
 using RoyalVillaWeb.Services.IServices;
 
 namespace RoyalVillaWeb.Services
@@ -6,18 +7,31 @@ namespace RoyalVillaWeb.Services
     public class AuthService : BaseService, IAuthService
     {
         private const string APIEndpoint = "/api/auth";
-        public AuthService(IHttpClientFactory httpClient, IConfiguration configuration) : base(httpClient)
+        public AuthService(IHttpClientFactory httpClient, IConfiguration configuration, IHttpContextAccessor contextAccessor) 
+            : base(httpClient, contextAccessor)
         {
             
         }
         public Task<T?> LoginAsync<T>(LoginRequestDTO loginRequestDTO)
         {
-            throw new NotImplementedException();
+            return SendAsync<T>(new ApiRequest
+            {
+                ApiType = SD.ApiType.POST,
+                Data = loginRequestDTO,
+                Url = APIEndpoint + "/login"
+
+            });
         }
 
         public Task<T?> RegisterAsync<T>(RegistrationRequestDTO registrationRequestDTO)
         {
-            throw new NotImplementedException();
+            return SendAsync<T>(new ApiRequest
+            {
+                ApiType = SD.ApiType.POST,
+                Data = registrationRequestDTO,
+                Url = APIEndpoint + "/register"
+
+            });
         }
     }
 }

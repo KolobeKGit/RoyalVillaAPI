@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using RoyalVilla.DTO;
 using RoyalVillaWeb.Services;
 using RoyalVillaWeb.Services.IServices;
@@ -6,6 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache(); //for the cookie
+builder.Services.AddSession(option =>
+{
+    option.IdleTimeout = TimeSpan.FromMinutes(60);
+    option.Cookie.HttpOnly = true;
+    option.Cookie.IsEssential = true;
+});
 
 builder.Services.AddAutoMapper(o =>
 {
@@ -15,6 +24,16 @@ builder.Services.AddAutoMapper(o =>
 
 });
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+        options.SlidingExpiration = true;
+        //.NET Core has pre-configured routes like Account that are not present in the project which need to be overriden
+        options.LoginPath = "/auth/login";
+        options.AccessDeniedPath = "/auth/accessdenied";
+    });
 builder.Services.AddHttpClient("RoyalVillaAPI", client =>
 {
     var villaAPIUrl = builder.Configuration.GetValue<string>("ServiceUrls:VillaAPI");
@@ -23,6 +42,7 @@ builder.Services.AddHttpClient("RoyalVillaAPI", client =>
  });
 
 builder.Services.AddScoped<IVillaService, VillaService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,7 +55,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseSession();
+//Authentication must come before authorization, for obvious reasons.
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
