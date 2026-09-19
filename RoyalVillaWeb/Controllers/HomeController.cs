@@ -32,7 +32,7 @@ namespace RoyalVillaWeb.Controllers
             }
             catch (Exception ex)
             {
-                TempData["error"] = $"An error occured: {ex.Message}";
+                TempData["error"] = $"An error occured : {ex.Message}";
             }
             return View(villaList);
         }
