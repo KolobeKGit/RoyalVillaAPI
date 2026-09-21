@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using RoyalVilla_API.Data;
 using RoyalVilla_API.Models;
 using RoyalVilla.DTO;
+using Asp.Versioning;
 
-namespace RoyalVilla_API.Controllers
+namespace RoyalVilla_API.Controllers.v2
 {
-    [Route("api/villa-amenities")]
+    [Route("api/v{version:apiVersion}/villa-amenities")]
+    [ApiVersion("2.0")]
     [ApiController]
     public class VillaAmenititesController : ControllerBase
     {
